@@ -40,6 +40,17 @@ public class ReqParam {
     public static final String ORDERS_LIST = "ordersList";
     public static final String ROLES_LIST = "rolesList";
 
+    public static final String PAGE = "page";
+    public static final String NO_OF_PAGE = "noOfPage";
+    public static final String CURRENT_PAGE = "currentPage";
+
+    public static final String IS_VIEW = "isView";
+    public static final String IS_FIND = "isFind";
+    public static final String IS_SORT = "isSort";
+
+    public static final String TRUE = "true";
+    public static final String FALSE = "false";
+
     public static final String STATUS = "status";
     public static final String STATUS_SUCCESS = "success";
     public static final String STATUS_FAILED = "failed";

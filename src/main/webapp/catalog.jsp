@@ -40,7 +40,7 @@
                     <table width="100%">
                         <tr>
                             <td align="center" width="50%">
-                                <form action="catalog" method="post">
+                                <form action="catalog" method="get">
                                     <input type="hidden" value="sorted_books" name="command" >
                                     <div class="page-section-heading d-lg-inline-flex mb-0" >
                                         <label class="form-control" >Cортировать по:</label>
@@ -54,7 +54,7 @@
                             <td align="center" width="50%">
                                 <form method="get">
                                     <div class="page-section-heading d-lg-inline-flex mb-3" >
-                                        <input type="text" name="find_param" class="search form-control-lg " placeholder="По автору, названию..." required>
+                                        <input type="text" name="find_param" value="${sessionScope.param}" class="search form-control-lg " placeholder="По автору, названию..." required>
                                         <button type="submit" name="command" class="btn btn-primary" value="find_books">Поиск</button>
                                     </div>
                                 </form>
@@ -62,7 +62,6 @@
                         </tr>
                     </table>
                 </div>
-
 
                 <div class="divider-custom">
                     <div class="divider-custom-line"></div>
@@ -73,7 +72,7 @@
                 </div>
 
                 <!-- Novelty Grid Items-->
-                <div class="row justify-content-center">
+                <div class="row justify-content-center" >
                     <c:forEach var="book" items="${bookList}">
                         <div class="col-md-6 col-lg-4 mb-5">
                             <div>
@@ -95,7 +94,6 @@
                                         </form>
                                     </div>
                                 </c:if>
-
                             </div>
                         </div>
 
@@ -121,9 +119,8 @@
                                                         </div>
                                                         <div class="divider-custom-line"></div>
                                                     </div>
-                                                    <!-- novelty Modal - Image-->
-                                                    <div>
 
+                                                    <div>
                                                         <table>
                                                             <style>
                                                                 h5 {
@@ -149,12 +146,7 @@
                                                         </table>
                                                     </div>
 
-                                                    <!-- novelty Modal - Text-->
                                                     <p class="mb-4">${book.description}</p>
-<%--                                                    <button class="btn btn-primary" href="#!"--%>
-<%--                                                            data-bs-dismiss="modal">--%>
-<%--                                                        <i class="fas fa-times fa-fw"></i> Закрыть описание--%>
-<%--                                                    </button>--%>
                                                     <button class="btn-primary text-center" type="button" data-bs-dismiss="modal" >Закрыть описание</button>
                                                 </div>
                                             </div>
@@ -168,29 +160,73 @@
             </div>
 
             <nav aria-label="Page navigation example">
+                <input type="hidden" name="isView" value="${isView}">
+                <input type="hidden" name="isSort" value="${isSort}">
+                <input type="hidden" name="isFind" value="${isFind}">
                 <ul class="pagination justify-content-center">
-                    <li class="page-item disabled">
-                        <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
-                    </li>
-                    <li class="page-item"><a class="page-link" href="#">1</a></li>
-                    <li class="page-item"><a class="page-link" href="#">2</a></li>
-                    <li class="page-item"><a class="page-link" href="#">3</a></li>
-                    <li class="page-item">
-                        <a class="page-link" href="#">Next</a>
-                    </li>
+                    <c:if test="${currentPage != 1}" >
+                        <li class="page-item">
+                            <c:if test="${sessionScope.isView == true}">
+                                <a class="page-link" href="catalog?command=get_book_list&page=${currentPage - 1}">Предыдущая</a>
+                            </c:if>
+                            <c:if test="${sessionScope.isSort == true}">
+                                <a class="page-link" href="catalog?command=sorted_books&sort_param=${sort_param}&page=${currentPage - 1}">Предыдущая</a>
+                            </c:if>
+                            <c:if test="${sessionScope.isFind == true}">
+                                <a class="page-link" href="catalog?find_param=${find_param}&command=find_books&page=${currentPage - 1}">Предыдущая</a>
+                            </c:if>
+                        </li>
+                    </c:if>
+                    <c:forEach begin="1" end="${noOfPages}" var="i">
+                        <c:choose>
+                            <c:when test="${currentPage eq i}">
+                                <li class="page-item" ><h5>
+                                    <c:if test="${isView == true}">
+                                        <a class="page-link" href="catalog?command=get_book_list&page=${i}">${i}</a>
+                                    </c:if>
+                                    <c:if test="${isSort == true}">
+                                        <a class="page-link" href="catalog?command=sorted_books&sort_param=${sort_param}&page=${i}">${i}</a>
+                                    </c:if>
+                                    <c:if test="${isFind == true}">
+                                        <a class="page-link" href="catalog?find_param=${find_param}&command=find_books&page=${i}">${i}</a>
+                                    </c:if>
+                                    </h5></li>
+                            </c:when>
+                            <c:otherwise>
+                                <li class="page-item">
+                                    <c:if test="${isView == true}">
+                                        <a class="page-link" href="catalog?command=get_book_list&page=${i}">${i}</a>
+                                    </c:if>
+                                    <c:if test="${isSort == true}">
+                                        <a class="page-link" href="catalog?command=sorted_books&sort_param=${sort_param}&page=${i}">${i}</a>
+                                    </c:if>
+                                    <c:if test="${isFind == true}">
+                                        <a class="page-link" href="catalog?find_param=${find_param}&command=find_books&page=${i}">${i}</a>
+                                    </c:if>
+                            </c:otherwise>
+                        </c:choose>
+
+                    </c:forEach>
+                    <c:if test="${currentPage lt noOfPages}">
+                        <li class="page-item">
+                            <c:if test="${sessionScope.isView == true}">
+                                <a class="page-link" href="catalog?command=get_book_list&page=${currentPage + 1}">Следующая</a>
+                            </c:if>
+                            <c:if test="${sessionScope.isSort == true}">
+                                <a class="page-link" href="catalog?command=sorted_books&sort_param=${sort_param}&page=${currentPage + 1}">Следующая</a>
+                            </c:if>
+                            <c:if test="${sessionScope.isFind == true}">
+                                <a class="page-link" href="catalog?find_param=${find_param}&command=find_books&page=${currentPage + 1}">Следующая</a>
+                            </c:if>
+                        </li>
+                    </c:if>
                 </ul>
             </nav>
-
         </section>
 
-
-        <!-- Footer-->
         <jsp:include page="footer.jsp" />
 
-        <!-- Bootstrap core JS-->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-        <!-- Core theme JS-->
-        <%--<script src="../../js/scripts.js"></script>--%>
         <script src="https://cdn.startbootstrap.com/sb-forms-latest.js"></script>
         <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
         <link rel="stylesheet" href="css/sweet-alert.css">

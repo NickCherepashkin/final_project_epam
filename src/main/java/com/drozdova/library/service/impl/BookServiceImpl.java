@@ -13,12 +13,17 @@ public class BookServiceImpl implements BookService {
     private static final BookDAO bookDAO = DAOProvider.getInstance().getBookDAO();
 
     @Override
-    public List<Book> getList() throws ServiceException {
+    public List<Book> getList(int offset, int noOfRecords) throws ServiceException {
         try{
-            return bookDAO.getBookList();
+            return bookDAO.getBookList(offset, noOfRecords);
         } catch (DAOException e) {
             throw new ServiceException(e);
         }
+    }
+
+    @Override
+    public int getNoOfRecords() {
+        return bookDAO.getNoOfRecords();
     }
 
     @Override
@@ -50,18 +55,18 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public List<Book> getSortedBooks(String param) throws ServiceException {
+    public List<Book> getSortedBooks(String param, int offset, int noOfRecords) throws ServiceException {
         try{
-            return bookDAO.getSortedBooks(param);
+            return bookDAO.getSortedBooks(param, offset, noOfRecords);
         } catch (DAOException e) {
             throw new ServiceException(e);
         }
     }
 
     @Override
-    public List<Book> findBooks(String param) throws ServiceException {
+    public List<Book> findBooks(String param, int offset, int noOfRecords) throws ServiceException {
         try{
-            return bookDAO.findBooks(param);
+            return bookDAO.findBooks(param, offset, noOfRecords);
         } catch (DAOException e) {
             throw new ServiceException(e);
         }

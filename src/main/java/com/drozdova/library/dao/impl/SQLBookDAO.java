@@ -13,7 +13,7 @@ import java.util.List;
 public class SQLBookDAO implements BookDAO {
     private static final ConnectionPool connectionPool = ConnectionPool.getInstance();
 
-    private static final String BOOK_LIST_QUERY = "SELECT book.*, genre.title AS 'genre', GROUP_CONCAT(author.name SEPARATOR' , ') as 'author' FROM book, genre, author, book_authors WHERE book.id_genre = genre.id and book.id = book_authors.id_book and book_authors.id_author = author.id AND book.delete_status = 1 GROUP BY id";
+    private static final String BOOK_LIST_QUERY = "SELECT SQL_CALC_FOUND_ROWS book.*, genre.title AS 'genre', GROUP_CONCAT(author.name SEPARATOR' , ') as 'author' FROM book, genre, author, book_authors WHERE book.id_genre = genre.id and book.id = book_authors.id_book and book_authors.id_author = author.id AND book.delete_status = 1 GROUP BY id LIMIT ";
     private static final String NOVELTY_LIST_QUERY = "SELECT book.*, genre.title AS 'genre', GROUP_CONCAT(author.name SEPARATOR' , ') as 'author' FROM book, genre, author, book_authors WHERE book.id_genre = genre.id and book.id = book_authors.id_book and book_authors.id_author = author.id AND book.delete_status = 1 GROUP BY id ORDER BY id DESC LIMIT 6";
     private static final String EDIT_BOOK_INFO_QUERY = "UPDATE book SET title = ?, id_genre = ?, year = ?, pages = ?, language = ?, description = ? WHERE id = ?";
     private static final String UPDATE_BOOK_AUTHOR_QUERY = "UPDATE book_authors SET id_author = ? WHERE id_book = ?";
@@ -21,20 +21,29 @@ public class SQLBookDAO implements BookDAO {
     private static final String ADD_BOOK_QUERY = "INSERT INTO book(title, id_genre, year, pages, language, description, delete_status) VALUES(?,?,?,?,?,?,1)";
     private static final String GET_BOOK_ID_QUERY = "SELECT id FROM book WHERE title = ?";
     private static final String INSERT_BOOK_AUTHOR_QUERY = "INSERT INTO book_authors(id_book, id_author) VALUES(?, ?)";
-    private static final String GET_SORTED_BOOKS_LIST_QUERY = "SELECT book.*, genre.title AS 'genre', GROUP_CONCAT(author.name SEPARATOR' , ') as 'author' FROM book, genre, author, book_authors WHERE book.id_genre = genre.id and book.id = book_authors.id_book and book_authors.id_author = author.id AND book.delete_status = 1 GROUP BY id ORDER BY ";
-    private static final String FIND_BOOKS_QUERY = "SELECT book.*, genre.title AS 'genre', GROUP_CONCAT(author.name SEPARATOR' , ') as 'author' FROM book, genre, author, book_authors WHERE book.id_genre = genre.id and book.id = book_authors.id_book and book_authors.id_author = author.id AND book.delete_status = 1 AND (book.title LIKE ? OR author.name LIKE ?)  GROUP BY id ORDER BY title ASC";
+    private static final String GET_SORTED_BOOKS_LIST_QUERY = "SELECT SQL_CALC_FOUND_ROWS book.*, genre.title AS 'genre', GROUP_CONCAT(author.name SEPARATOR' , ') as 'author' FROM book, genre, author, book_authors WHERE book.id_genre = genre.id and book.id = book_authors.id_book and book_authors.id_author = author.id AND book.delete_status = 1 GROUP BY id ORDER BY ";
+    private static final String FIND_BOOKS_QUERY = "SELECT SQL_CALC_FOUND_ROWS book.*, genre.title AS 'genre', GROUP_CONCAT(author.name SEPARATOR' , ') as 'author' FROM book, genre, author, book_authors WHERE book.id_genre = genre.id and book.id = book_authors.id_book and book_authors.id_author = author.id AND book.delete_status = 1 AND (book.title LIKE ? OR author.name LIKE ?)  GROUP BY id ORDER BY title ASC LIMIT ";
+    private static final String COUNT_BOOKS_QUERY = "SELECT FOUND_ROWS();";
+
+    private int noOfRecords;
 
     @Override
-    public List<Book> getBookList() throws DAOException {
+    public int getNoOfRecords() {
+        return noOfRecords;
+    }
+
+    @Override
+    public List<Book> getBookList(int offset, int noOfRecords) throws DAOException {
         ResultSet resultSet = null;
         Statement statement = null;
         Connection connection = null;
 
         List<Book> bookList;
         try {
+            String query = BOOK_LIST_QUERY + offset + ", " + noOfRecords;
             connection = connectionPool.takeConnection();
             statement = connection.createStatement();
-            resultSet = statement.executeQuery(BOOK_LIST_QUERY);
+            resultSet = statement.executeQuery(query);
 
             bookList = new ArrayList<>();
             while (resultSet.next()) {
@@ -49,6 +58,11 @@ public class SQLBookDAO implements BookDAO {
                 book.setDescription(resultSet.getString("description"));
 
                 bookList.add(book);
+            }
+
+            resultSet = statement.executeQuery(COUNT_BOOKS_QUERY);
+            if (resultSet.next()) {
+                this.noOfRecords = resultSet.getInt(1);
             }
         } catch (ConnectionPoolException e) {
             throw new DAOException("Connection Pool Error when trying to get Book List", e);
@@ -178,7 +192,7 @@ public class SQLBookDAO implements BookDAO {
     }
 
     @Override
-    public List<Book> getSortedBooks(String param) throws DAOException {
+    public List<Book> getSortedBooks(String param, int offset, int noOfRecords) throws DAOException {
         Connection connection = null;
         Statement statement = null;
         ResultSet resultSet = null;
@@ -186,9 +200,10 @@ public class SQLBookDAO implements BookDAO {
         List<Book> bookList;
 
         try {
+            String query = GET_SORTED_BOOKS_LIST_QUERY + param + " LIMIT " + offset + ", " + noOfRecords;
             connection = connectionPool.takeConnection();
             statement = connection.createStatement();
-            resultSet = statement.executeQuery(GET_SORTED_BOOKS_LIST_QUERY + param + " ASC");
+            resultSet = statement.executeQuery(query);
 
             bookList = new ArrayList<>();
 
@@ -205,6 +220,11 @@ public class SQLBookDAO implements BookDAO {
 
                 bookList.add(book);
             }
+
+            resultSet = statement.executeQuery(COUNT_BOOKS_QUERY);
+            if (resultSet.next()) {
+                this.noOfRecords = resultSet.getInt(1);
+            }
         } catch (ConnectionPoolException e) {
             throw new DAOException("Connection Pool Error when trying to get Sorted Books", e);
         } catch (SQLException e) {
@@ -218,7 +238,7 @@ public class SQLBookDAO implements BookDAO {
     }
 
     @Override
-    public List<Book> findBooks(String param) throws DAOException {
+    public List<Book> findBooks(String param, int offset, int noOfRecords) throws DAOException {
         Connection connection = null;
         PreparedStatement pStatement = null;
         ResultSet resultSet = null;
@@ -227,8 +247,9 @@ public class SQLBookDAO implements BookDAO {
 
         try {
             String newParam = "%" + param + "%";
+            String query = FIND_BOOKS_QUERY + offset + ", " + noOfRecords;
             connection = connectionPool.takeConnection();
-            pStatement = connection.prepareStatement(FIND_BOOKS_QUERY);
+            pStatement = connection.prepareStatement(query);
             pStatement.setString(1, newParam);
             pStatement.setString(2, newParam);
             resultSet = pStatement.executeQuery();
@@ -247,6 +268,11 @@ public class SQLBookDAO implements BookDAO {
                 book.setDescription(resultSet.getString("description"));
 
                 bookList.add(book);
+            }
+
+            resultSet = pStatement.executeQuery(COUNT_BOOKS_QUERY);
+            if (resultSet.next()) {
+                this.noOfRecords = resultSet.getInt(1);
             }
         } catch (ConnectionPoolException e) {
             throw new DAOException("Connection Pool Error when trying to find Books", e);
