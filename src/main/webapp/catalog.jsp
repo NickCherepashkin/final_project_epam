@@ -25,16 +25,6 @@
         <input type="hidden" id="status" value="${requestScope.get("status")}">
         <section class="page-section-books novelty" id="novelty">
             <div class="container">
-                <!-- Novelty Section Heading-->
-                <h2 class="page-section-heading text-center text-uppercase text-secondary mb-0">Книги</h2>
-                <!-- Icon Divider-->
-                <div class="divider-custom">
-                    <div class="divider-custom-line"></div>
-                    <div class="divider-custom-icon">
-                        <i class="fas fa-star"></i>
-                    </div>
-                    <div class="divider-custom-line"></div>
-                </div>
 
                 <div class="divider-custom">
                     <table width="100%">
@@ -70,6 +60,18 @@
                     </div>
                     <div class="divider-custom-line"></div>
                 </div>
+
+                <h2 class="page-section-heading text-center text-uppercase text-secondary mb-0">Книги</h2>
+                <!-- Icon Divider-->
+                <div class="divider-custom">
+                    <div class="divider-custom-line"></div>
+                    <div class="divider-custom-icon">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <div class="divider-custom-line"></div>
+                </div>
+
+
 
                 <!-- Novelty Grid Items-->
                 <div class="row justify-content-center" >
@@ -160,9 +162,9 @@
             </div>
 
             <nav aria-label="Page navigation example">
-                <input type="hidden" name="isView" value="${isView}">
-                <input type="hidden" name="isSort" value="${isSort}">
-                <input type="hidden" name="isFind" value="${isFind}">
+                <input type="hidden" name="isView" value="${sessionScope.isView}">
+                <input type="hidden" name="isSort" value="${sessionScope.isSort}">
+                <input type="hidden" name="isFind" value="${sessionScope.isFind}">
                 <ul class="pagination justify-content-center">
                     <c:if test="${currentPage != 1}" >
                         <li class="page-item">
@@ -181,31 +183,32 @@
                         <c:choose>
                             <c:when test="${currentPage eq i}">
                                 <li class="page-item" ><h5>
-                                    <c:if test="${isView == true}">
+                                    <c:if test="${sessionScope.isView == true}">
                                         <a class="page-link" href="catalog?command=get_book_list&page=${i}">${i}</a>
                                     </c:if>
-                                    <c:if test="${isSort == true}">
+                                    <c:if test="${sessionScope.isSort == true}">
                                         <a class="page-link" href="catalog?command=sorted_books&sort_param=${sort_param}&page=${i}">${i}</a>
                                     </c:if>
-                                    <c:if test="${isFind == true}">
+                                    <c:if test="${sessionScope.isFind == true}">
                                         <a class="page-link" href="catalog?find_param=${find_param}&command=find_books&page=${i}">${i}</a>
                                     </c:if>
-                                    </h5></li>
+                                    </h5>
+                                </li>
                             </c:when>
                             <c:otherwise>
                                 <li class="page-item">
-                                    <c:if test="${isView == true}">
+                                    <c:if test="${sessionScope.isView == true}">
                                         <a class="page-link" href="catalog?command=get_book_list&page=${i}">${i}</a>
                                     </c:if>
-                                    <c:if test="${isSort == true}">
+                                    <c:if test="${sessionScope.isSort == true}">
                                         <a class="page-link" href="catalog?command=sorted_books&sort_param=${sort_param}&page=${i}">${i}</a>
                                     </c:if>
-                                    <c:if test="${isFind == true}">
+                                    <c:if test="${sessionScope.isFind == true}">
                                         <a class="page-link" href="catalog?find_param=${find_param}&command=find_books&page=${i}">${i}</a>
                                     </c:if>
+                                </li>
                             </c:otherwise>
                         </c:choose>
-
                     </c:forEach>
                     <c:if test="${currentPage lt noOfPages}">
                         <li class="page-item">

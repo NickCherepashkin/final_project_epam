@@ -41,7 +41,7 @@ public class ReqParam {
     public static final String ROLES_LIST = "rolesList";
 
     public static final String PAGE = "page";
-    public static final String NO_OF_PAGE = "noOfPage";
+    public static final String NO_OF_PAGE = "noOfPages";
     public static final String CURRENT_PAGE = "currentPage";
 
     public static final String IS_VIEW = "isView";

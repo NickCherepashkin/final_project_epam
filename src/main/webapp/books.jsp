@@ -25,14 +25,6 @@
     <input type="hidden" id="status" value="${requestScope.get("status")}">
     <section class="page-section-books novelty" id="novelty">
       <div class="container">
-        <h2 class="page-section-heading text-center text-uppercase text-secondary mb-0">Книги</h2>
-        <div class="divider-custom">
-          <div class="divider-custom-line"></div>
-          <div class="divider-custom-icon">
-            <i class="fas fa-star"></i>
-          </div>
-          <div class="divider-custom-line"></div>
-        </div>
 
         <div class="divider-custom">
           <table width="100%">
@@ -64,6 +56,16 @@
             </tr>
           </table>
         </div>
+
+        <div class="divider-custom">
+          <div class="divider-custom-line"></div>
+          <div class="divider-custom-icon">
+            <i class="fas fa-star"></i>
+          </div>
+          <div class="divider-custom-line"></div>
+        </div>
+
+        <h2 class="page-section-heading text-center text-uppercase text-secondary mb-0">Книги</h2>
 
         <div class="divider-custom">
           <div class="divider-custom-line"></div>
@@ -254,6 +256,71 @@
           </div>
         </div>
       </div>
+
+      <nav aria-label="Page navigation">
+        <input type="hidden" name="isView" value="${isView}">
+        <input type="hidden" name="isSort" value="${isSort}">
+        <input type="hidden" name="isFind" value="${isFind}">
+        <ul class="pagination justify-content-center">
+          <c:if test="${currentPage != 1}" >
+            <li class="page-item">
+              <c:if test="${sessionScope.isView == true}">
+                <a class="page-link" href="catalog?command=get_book_list&page=${currentPage - 1}">Предыдущая</a>
+              </c:if>
+              <c:if test="${sessionScope.isSort == true}">
+                <a class="page-link" href="catalog?command=sorted_books&sort_param=${sort_param}&page=${currentPage - 1}">Предыдущая</a>
+              </c:if>
+              <c:if test="${sessionScope.isFind == true}">
+                <a class="page-link" href="catalog?find_param=${find_param}&command=find_books&page=${currentPage - 1}">Предыдущая</a>
+              </c:if>
+            </li>
+          </c:if>
+          <c:forEach begin="1" end="${noOfPages}" var="i">
+          <c:choose>
+          <c:when test="${currentPage eq i}">
+            <li class="page-item" ><h5>
+              <c:if test="${sessionScope.isView == true}">
+                <a class="page-link" href="catalog?command=get_book_list&page=${i}">${i}</a>
+              </c:if>
+              <c:if test="${sessionScope.isSort == true}">
+                <a class="page-link" href="catalog?command=sorted_books&sort_param=${sort_param}&page=${i}">${i}</a>
+              </c:if>
+              <c:if test="${sessionScope.isFind == true}">
+                <a class="page-link" href="catalog?find_param=${find_param}&command=find_books&page=${i}">${i}</a>
+              </c:if>
+            </h5></li>
+          </c:when>
+          <c:otherwise>
+          <li class="page-item">
+            <c:if test="${sessionScope.isView == true}">
+              <a class="page-link" href="books-list?command=get_book_list&page=${i}">${i}</a>
+            </c:if>
+            <c:if test="${sessionScope.isSort == true}">
+            <a class="page-link" href="catalog?command=sorted_books&sort_param=${sort_param}&page=${i}">${i}</a>
+            </c:if>
+            <c:if test="${sessionScope.isFind == true}">
+            <a class="page-link" href="catalog?find_param=${find_param}&command=find_books&page=${i}">${i}</a>
+            </c:if>
+            </c:otherwise>
+            </c:choose>
+
+            </c:forEach>
+            <c:if test="${currentPage lt noOfPages}">
+          <li class="page-item">
+            <c:if test="${sessionScope.isView == true}">
+              <a class="page-link" href="catalog?command=get_book_list&page=${currentPage + 1}">Следующая</a>
+            </c:if>
+            <c:if test="${sessionScope.isSort == true}">
+              <a class="page-link" href="catalog?command=sorted_books&sort_param=${sort_param}&page=${currentPage + 1}">Следующая</a>
+            </c:if>
+            <c:if test="${sessionScope.isFind == true}">
+              <a class="page-link" href="catalog?find_param=${find_param}&command=find_books&page=${currentPage + 1}">Следующая</a>
+            </c:if>
+          </li>
+          </c:if>
+        </ul>
+      </nav>
+
     </section>
 
     <jsp:include page="footer.jsp" />
