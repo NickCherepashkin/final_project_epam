@@ -39,15 +39,15 @@
           <table width="100%">
             <tr>
               <td align="center" width="50%">
-                <form action="catalog" method="post">
-                  <input type="hidden" value="sorted_books" name="command" >
+                <form action="orders-list" method="post">
+                  <input type="hidden" value="get_orders" name="command" >
                   <div class="page-section-heading d-lg-inline-flex mb-0" >
                     <label class="form-control" ><h6>Cортировать по:</h6></label>
-                    <button type="submit" class="search form-control" name="sort_param" value="title">номеру</button>
+                    <button type="submit" class="search form-control" name="sort_param" value="id">номеру</button>
                     <c:if test="${user.idRole == 1}" >
-                      <button type="submit" class="search form-control" name="sort_param" value="author" >фамилии</button>
+                      <button type="submit" class="search form-control" name="sort_param" value="fio" >фамилии</button>
                     </c:if>
-                    <button type="submit" class="search form-control" name="sort_param" value="genre" >статусу</button>
+                    <button type="submit" class="search form-control" name="sort_param" value="status" >статусу</button>
                   </div>
                 </form>
 

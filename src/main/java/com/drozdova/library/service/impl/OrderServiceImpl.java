@@ -28,9 +28,9 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<Order> getOrdersList(int idUser) throws ServiceException {
+    public List<Order> getOrdersList(String param, int idUser) throws ServiceException {
         try {
-            return orderDAO.getOrdersList(idUser);
+            return orderDAO.getOrdersList(param, idUser);
         } catch (DAOException e) {
             throw new ServiceException(e);
         }

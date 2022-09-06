@@ -18,12 +18,12 @@ public class SQLOrderDAO implements OrderDAO {
             "FROM book_order, user_info, book, author, status_order, book_authors " +
             "WHERE book_order.id_user = ? AND book_order.id_user = user_info.id_user AND book_order.id_book = book.id " +
             "AND book_authors.id_book = book_order.id_book AND book_authors.id_author = author.id " +
-            "AND book_order.id_status = status_order.id GROUP BY book.id ORDER BY book_order.id DESC";
-    private static final String GET_ORDERS_QUERY = "SELECT book_order.id, book_order.id_book, user_info.fio AS 'fio', book.title, GROUP_CONCAT(author.name SEPARATOR' , ') AS 'name', book_order.id_status, status_order.status " +
+            "AND book_order.id_status = status_order.id GROUP BY book.id ORDER BY ";
+    private static final String GET_ORDERS_QUERY = "SELECT book_order.id, book_order.id_book, user_info.fio AS 'fio', book.title, author.name, book_order.id_status, status_order.status " +
             "FROM book_order, user_info, book, author, status_order, book_authors " +
             "WHERE book_order.id_user = user_info.id_user AND book_order.id_book = book.id " +
             "AND book_authors.id_book = book_order.id_book AND book_authors.id_author = author.id " +
-            "AND book_order.id_status = status_order.id GROUP BY book.id ORDER BY book_order.id DESC";
+            "AND book_order.id_status = status_order.id ORDER BY ";
     private static final String EDIT_ORDER_STATUS_QUERY = "UPDATE book_order SET id_status = ? WHERE id = ?";
     private static final String GET_ORDER_BY_USER_AND_BOOK = "SELECT id, id_status FROM book_order WHERE id_user = ? AND id_book = ?";
 
@@ -63,18 +63,21 @@ public class SQLOrderDAO implements OrderDAO {
     }
 
     @Override
-    public List<Order> getOrdersList(int idUser) throws DAOException {
+    public List<Order> getOrdersList(String param, int idUser) throws DAOException {
         Connection connection = null;
         PreparedStatement pStatement = null;
         ResultSet resultSet = null;
         List<Order> ordersList;
 
         try {
+
             connection = connectionPool.takeConnection();
             if(idUser == 0) {
-                pStatement = connection.prepareStatement(GET_ORDERS_QUERY);
+                String query = GET_ORDERS_QUERY + param + " ASC";
+                pStatement = connection.prepareStatement(query);
             } else {
-                pStatement = connection.prepareStatement(GET_ORDERS_BY_USER_QUERY);
+                String query = GET_ORDERS_BY_USER_QUERY + param + " ASC";
+                pStatement = connection.prepareStatement(query);
                 pStatement.setLong(1, idUser);
             }
 

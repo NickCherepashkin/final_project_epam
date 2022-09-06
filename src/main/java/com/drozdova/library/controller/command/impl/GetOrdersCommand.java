@@ -28,12 +28,19 @@ public class GetOrdersCommand implements Command {
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, ServiceException {
         User user = (User) request.getSession().getAttribute(ReqParam.USER);
         int idRole = user.getIdRole();
+        String param = request.getParameter(ReqParam.SORT);
         List<Order> ordersList;
-        if(idRole == 1) {
-            ordersList = orderService.getOrdersList(0);
-        } else {
-            ordersList = orderService.getOrdersList(user.getId());
+        if (param == null) {
+            param = ReqParam.ID;
+        } else if (param.equals(ReqParam.STATUS)) {
+            param = ReqParam.ID_STATUS;
         }
+        if(idRole == 1) {
+            ordersList = orderService.getOrdersList(param, 0);
+        } else {
+            ordersList = orderService.getOrdersList(param, user.getId());
+        }
+
 
         request.setAttribute(ReqParam.ORDERS_LIST, ordersList);
         RequestDispatcher requestDispatcher = request.getRequestDispatcher(JSPPageName.ORDERS_PAGE);
