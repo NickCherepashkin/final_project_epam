@@ -92,7 +92,7 @@ public class UserServiceImpl implements UserService {
     public int deleteUser(int id, int idForDel, int role) throws ServiceException {
         try {
             validator.isNotMyId(id, idForDel);
-            return userDAO.deleteUser(id, role);
+            return userDAO.deleteUser(idForDel, role);
         } catch (DAOException e) {
             throw new ServiceException(e);
         }
