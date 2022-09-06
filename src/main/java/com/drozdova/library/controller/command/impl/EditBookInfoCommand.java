@@ -43,17 +43,21 @@ public class EditBookInfoCommand implements Command {
             book.setDescription(request.getParameter(ReqParam.DESCRIPTION));
             int idAuthor = Integer.parseInt(request.getParameter(ReqParam.ID_AUTHOR));
             int id = bookService.editBookInfo(book, idAuthor);
+            String imgName = request.getParameter("file");
 
-            Part part = request.getPart(ReqParam.FILE);
-            String path = request.getServletContext().getRealPath("\\") + "\\assets\\img\\books\\";
-            File file = new File(path, id + ".png");
-            if (file.exists()) {
-                file.delete();
+            if (imgName != null) {
+                Part part = request.getPart(ReqParam.FILE);
+                String path = request.getServletContext().getRealPath("\\") + "\\assets\\img\\books\\";
+                File file = new File(path, id + ".png");
+                if (file.exists()) {
+                    file.delete();
+                }
+
+                try (InputStream input = part.getInputStream()) {
+                    Files.copy(input, file.toPath());
+                }
             }
 
-            try (InputStream input = part.getInputStream()) {
-                Files.copy(input, file.toPath());
-            }
 
             request.setAttribute(ReqParam.STATUS, ReqParam.STATUS_SUCCESS);
             request.setAttribute(ReqParam.MESSAGE,"Изменения сохранены ");

@@ -153,8 +153,9 @@ public class SQLBookDAO implements BookDAO {
                 pStatement = connection.prepareStatement(UPDATE_BOOK_AUTHOR_QUERY);
             }
 
-            pStatement.setInt(1, id);
-            pStatement.setInt(2, idAuthor);
+            pStatement.setInt(1, idAuthor);
+            pStatement.setInt(2, id);
+
             pStatement.executeUpdate();
 
             return id;

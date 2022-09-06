@@ -76,7 +76,6 @@
   </section>
 </div>
 
-<%--	<script src="vendor/jquery/jquery.min.js"></script>--%>
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 <link rel="stylesheet" href="css/sweet-alert.css">
 <script src="js/menu.js"></script>

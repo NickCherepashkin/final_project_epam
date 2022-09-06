@@ -1,6 +1,8 @@
 package com.drozdova.library.controller.command.impl;
 
+import com.drozdova.library.bean.Author;
 import com.drozdova.library.bean.Book;
+import com.drozdova.library.bean.Genre;
 import com.drozdova.library.bean.User;
 import com.drozdova.library.controller.JSPPageName;
 import com.drozdova.library.controller.ReqParam;
@@ -29,12 +31,13 @@ public class  FindBooksCommand implements Command {
             request.removeAttribute(ReqParam.CURRENT_PAGE);
             request.getSession().removeAttribute(ReqParam.IS_VIEW);
             request.getSession().removeAttribute(ReqParam.IS_SORT);
+            request.getSession().removeAttribute(ReqParam.SORT);
             request.getSession().setAttribute(ReqParam.IS_FIND, ReqParam.TRUE);
             request.getSession().setAttribute(ReqParam.FIND, param);
         }
 
         int page = 1;
-        int recordsPerPage = 3;
+        int recordsPerPage = 9;
         if (request.getParameter(ReqParam.PAGE) != null) {
             page = Integer.parseInt(request.getParameter(ReqParam.PAGE));
         }
@@ -52,18 +55,19 @@ public class  FindBooksCommand implements Command {
         int noOfPages = (int) Math.ceil(noOfRecords * 1.0 / recordsPerPage);
 
         request.setAttribute(ReqParam.BOOKS_LIST, bookList);
-        request.setAttribute(ReqParam.NOVELTIES_LIST, noOfPages);
+        request.setAttribute(ReqParam.NO_OF_PAGE, noOfPages);
         request.setAttribute(ReqParam.CURRENT_PAGE, page);
+        request.getSession().setAttribute(ReqParam.FIND, param);
         RequestDispatcher requestDispatcher;
         if (user == null || user.getIdRole() == 2) {
             requestDispatcher = request.getRequestDispatcher(JSPPageName.CATALOG_PAGE);
         } else {
-//            GenreService genreService = provider.getGenreService();
-//            AuthorService authorService = provider.getAuthorService();
-//            List<Genre> genresList = genreService.getGenresList();
-//            List<Author> authorsList = authorService.getAuthorsList();
-//            request.setAttribute("genresList", genresList);
-//            request.setAttribute("authorsList", authorsList);
+            GenreService genreService = provider.getGenreService();
+            AuthorService authorService = provider.getAuthorService();
+            List<Genre> genresList = genreService.getGenresList();
+            List<Author> authorsList = authorService.getAuthorsList();
+            request.setAttribute("genresList", genresList);
+            request.setAttribute("authorsList", authorsList);
             requestDispatcher = request.getRequestDispatcher(JSPPageName.BOOKS_PAGE);
         }
         try {

@@ -9,7 +9,7 @@
 <fmt:message bundle="${lang}" key="language.button.menu" var="menu" />
 <fmt:message bundle="${lang}" key="language.link.menu-home" var="text_home" />
 <fmt:message bundle="${lang}" key="language.link.menu-catalog" var="text_catalog" />
-<fmt:message bundle="${lang}" key="language.link.menu-adout" var="text_about" />
+<fmt:message bundle="${lang}" key="language.link.menu-about" var="text_about" />
 <fmt:message bundle="${lang}" key="language.link.menu-contact" var="text_contact" />
 <fmt:message bundle="${lang}" key="language.link.menu-login" var="text_login" />
 <fmt:message bundle="${lang}" key="language.link.menu-authors" var="text_authors" />
@@ -89,7 +89,6 @@
 
         <c:if test="${sessionScope.language == 'ru' || sessionScope.language == null}" >
           <li class="nav-item mx-0 mx-lg-1">
-  <%--          <input class="nav-link py-3 px-0 px-lg-3 rounded" formmethod="get" type="">--%>
             <form>
               <button class="nav-link py-3 px-0 px-lg-3 rounded" type="submit" formaction="home" formmethod="post" name="command" value="change_lang">ENG</button>
               <input type="hidden" name="language" value="en">

@@ -174,11 +174,11 @@
                             </div>
                             <div class="mb-3">
                                 <label class="col-form-label">Пароль:</label>
-                                <label for="pass_user"></label><input type="password" class="form-control" name="password" required>
+                                <label></label><input type="password" class="form-control" name="password" required>
                             </div>
                             <div class="mb-3">
                                 <label class="col-form-label">Повторите пароль:</label>
-                                <label for="pass_user"></label><input type="password" class="form-control" name="re_pass" required>
+                                <label></label><input type="password" class="form-control" name="re_pass" required>
                             </div>
 
                             <div class="modal-footer">

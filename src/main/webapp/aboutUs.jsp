@@ -16,6 +16,7 @@
     <head>
         <meta charset="utf-8" />
         <title>Sherlock - on-line library</title>
+        <script src="https://use.fontawesome.com/releases/v5.15.4/js/all.js" crossorigin="anonymous"></script>
         <link href="css/index-styles.css" rel="stylesheet" />
     </head>
     <body>

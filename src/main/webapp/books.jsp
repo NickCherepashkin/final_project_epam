@@ -26,6 +26,16 @@
     <section class="page-section-books novelty" id="novelty">
       <div class="container">
 
+        <h2 class="page-section-heading text-center text-uppercase text-secondary mb-0">Книги</h2>
+
+        <div class="divider-custom">
+          <div class="divider-custom-line"></div>
+          <div class="divider-custom-icon">
+            <i class="fas fa-star"></i>
+          </div>
+          <div class="divider-custom-line"></div>
+        </div>
+
         <div class="divider-custom">
           <table width="100%">
             <tr>
@@ -55,24 +65,6 @@
               </td>
             </tr>
           </table>
-        </div>
-
-        <div class="divider-custom">
-          <div class="divider-custom-line"></div>
-          <div class="divider-custom-icon">
-            <i class="fas fa-star"></i>
-          </div>
-          <div class="divider-custom-line"></div>
-        </div>
-
-        <h2 class="page-section-heading text-center text-uppercase text-secondary mb-0">Книги</h2>
-
-        <div class="divider-custom">
-          <div class="divider-custom-line"></div>
-          <div class="divider-custom-icon">
-            <i class="fas fa-star"></i>
-          </div>
-          <div class="divider-custom-line"></div>
         </div>
 
         <c:forEach var="book" items="${bookList}">
@@ -180,7 +172,7 @@
                     </div>
                     <div class="mb-3">
                       <label class="col-form-label">Обложка:</label>
-                      <label></label><input type="file" class="form-control" name="file" required>
+                      <label></label><input type="file" class="form-control" name="file">
                     </div>
                     <div class="mb-3">
                       <label for="description" class="col-form-label text-center">Описание:</label>
@@ -240,7 +232,7 @@
                   </div>
                   <div class="mb-3">
                     <label class="col-form-label">Обложка:</label>
-                    <label></label><input type="file" class="form-control" name="file" required>
+                    <label></label><input type="file" class="form-control" name="file">
                   </div>
                   <div class="mb-3">
                     <label for="new_description" class="col-form-label text-center">Описание:</label>
@@ -258,9 +250,9 @@
       </div>
 
       <nav aria-label="Page navigation">
-        <input type="hidden" name="isView" value="${isView}">
-        <input type="hidden" name="isSort" value="${isSort}">
-        <input type="hidden" name="isFind" value="${isFind}">
+<%--        <input type="hidden" name="isView" value="${isView}">--%>
+<%--        <input type="hidden" name="isSort" value="${isSort}">--%>
+<%--        <input type="hidden" name="isFind" value="${isFind}">--%>
         <ul class="pagination justify-content-center">
           <c:if test="${currentPage != 1}" >
             <li class="page-item">

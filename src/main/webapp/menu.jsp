@@ -9,7 +9,7 @@
 <fmt:message bundle="${lang}" key="language.button.menu" var="menu" />
 <fmt:message bundle="${lang}" key="language.link.menu-home" var="text_home" />
 <fmt:message bundle="${lang}" key="language.link.menu-catalog" var="text_catalog" />
-<fmt:message bundle="${lang}" key="language.link.menu-adout" var="text_about" />
+<fmt:message bundle="${lang}" key="language.link.menu-about" var="text_about" />
 <fmt:message bundle="${lang}" key="language.link.menu-contact" var="text_contact" />
 <fmt:message bundle="${lang}" key="language.link.menu-login" var="text_login" />
 <fmt:message bundle="${lang}" key="language.link.menu-authors" var="text_authors" />

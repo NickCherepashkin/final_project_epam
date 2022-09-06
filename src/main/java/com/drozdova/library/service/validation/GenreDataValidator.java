@@ -11,7 +11,7 @@ public class GenreDataValidator {
 
     public void checkGenre(String genre) throws ValidationException{
         if(genre == null || genre.isEmpty()) {
-            throw new ValidationException("Field with title of genre is empty. Enter title of genre.");
+            throw new ValidationException("Введите название жанра");
         }
     }
 }

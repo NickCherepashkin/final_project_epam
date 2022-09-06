@@ -20,6 +20,7 @@
     <head>
         <meta charset="utf-8" />
         <title>Sherlock - on-line library</title>
+        <script src="https://use.fontawesome.com/releases/v5.15.4/js/all.js" crossorigin="anonymous"></script>
         <link href="css/index-styles.css" rel="stylesheet" />
     </head>
 
@@ -32,9 +33,9 @@
     <body id="page-top">
         <jsp:include page="menu-index.jsp" />
         <jsp:include page="header.jsp" />
-        <section class="page-section novelty" id="novelty">
+        <section class="page-section-novelties novelty" id="novelty">
             <div class="container">
-                <h2 class="page-section-heading text-center text-uppercase text-secondary mb-0">${novelties}</h2>
+                <h2 class="page-section-heading text-center text-uppercase text-secondary">${novelties}</h2>
                 <div class="divider-custom">
                     <div class="divider-custom-line"></div>
                     <div class="divider-custom-icon">

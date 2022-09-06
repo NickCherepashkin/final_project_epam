@@ -13,7 +13,7 @@
 <jsp:include page="menu.jsp" />
 <br>
 <br>
-<h1>Oops, something went wrong, try again later.</h1>
+<h1>Oh, something went wrong, try again later.</h1>
 ${param.errorMsg}
 <br>
 <br>

@@ -25,9 +25,8 @@
     <input type="hidden" id="status" value="${requestScope.get("status")}">
     <section class="page-section-books novelty" id="novelty">
       <div class="container">
-        <!-- Novelty Section Heading-->
         <h2 class="page-section-heading text-center text-uppercase text-secondary mb-0">Заказы</h2>
-        <!-- Icon Divider-->
+
         <div class="divider-custom">
           <div class="divider-custom-line"></div>
           <div class="divider-custom-icon">
@@ -64,16 +63,6 @@
             </tr>
           </table>
         </div>
-
-
-        <div class="divider-custom">
-          <div class="divider-custom-line"></div>
-          <div class="divider-custom-icon">
-            <i class="fas fa-star"></i>
-          </div>
-          <div class="divider-custom-line"></div>
-        </div>
-
 
         <c:forEach var="order" items="${ordersList}">
           <div class="modal-dialog modal-lg">

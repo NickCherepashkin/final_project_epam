@@ -26,6 +26,16 @@
         <section class="page-section-books novelty" id="novelty">
             <div class="container">
 
+                <h2 class="page-section-heading text-center text-uppercase text-secondary mb-0">Книги</h2>
+                <!-- Icon Divider-->
+                <div class="divider-custom">
+                    <div class="divider-custom-line"></div>
+                    <div class="divider-custom-icon">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <div class="divider-custom-line"></div>
+                </div>
+
                 <div class="divider-custom">
                     <table width="100%">
                         <tr>
@@ -33,7 +43,7 @@
                                 <form action="catalog" method="get">
                                     <input type="hidden" value="sorted_books" name="command" >
                                     <div class="page-section-heading d-lg-inline-flex mb-0" >
-                                        <label class="form-control" >Cортировать по:</label>
+                                        <label class="form-control" ><h6>Cортировать по:</h6></label>
                                         <button type="submit" class="search form-control" name="sort_param" value="title">названию</button>
                                         <button type="submit" class="search form-control" name="sort_param" value="author" >автору</button>
                                         <button type="submit" class="search form-control" name="sort_param" value="genre" >жанру</button>
@@ -52,26 +62,6 @@
                         </tr>
                     </table>
                 </div>
-
-                <div class="divider-custom">
-                    <div class="divider-custom-line"></div>
-                    <div class="divider-custom-icon">
-                        <i class="fas fa-star"></i>
-                    </div>
-                    <div class="divider-custom-line"></div>
-                </div>
-
-                <h2 class="page-section-heading text-center text-uppercase text-secondary mb-0">Книги</h2>
-                <!-- Icon Divider-->
-                <div class="divider-custom">
-                    <div class="divider-custom-line"></div>
-                    <div class="divider-custom-icon">
-                        <i class="fas fa-star"></i>
-                    </div>
-                    <div class="divider-custom-line"></div>
-                </div>
-
-
 
                 <!-- Novelty Grid Items-->
                 <div class="row justify-content-center" >

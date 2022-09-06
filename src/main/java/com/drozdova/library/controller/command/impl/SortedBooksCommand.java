@@ -36,7 +36,7 @@ public class SortedBooksCommand implements Command {
         }
 
         int page = 1;
-        int recordsPerPage = 3;
+        int recordsPerPage = 9;
         if (request.getParameter(ReqParam.PAGE) != null) {
             page = Integer.parseInt(request.getParameter(ReqParam.PAGE));
         }
@@ -58,12 +58,12 @@ public class SortedBooksCommand implements Command {
         if (user == null || user.getIdRole() == 2) {
             requestDispatcher = request.getRequestDispatcher(JSPPageName.CATALOG_PAGE);
         } else {
-//            GenreService genreService = provider.getGenreService();
-//            AuthorService authorService = provider.getAuthorService();
-//            List<Genre> genresList = genreService.getGenresList();
-//            List<Author> authorsList = authorService.getAuthorsList();
-//            request.setAttribute("genresList", genresList);
-//            request.setAttribute("authorsList", authorsList);
+            GenreService genreService = provider.getGenreService();
+            AuthorService authorService = provider.getAuthorService();
+            List<Genre> genresList = genreService.getGenresList();
+            List<Author> authorsList = authorService.getAuthorsList();
+            request.setAttribute("genresList", genresList);
+            request.setAttribute("authorsList", authorsList);
             requestDispatcher = request.getRequestDispatcher(JSPPageName.BOOKS_PAGE);
         }
         try {

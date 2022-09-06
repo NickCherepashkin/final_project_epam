@@ -33,7 +33,7 @@ public class GenreServiceImpl implements GenreService {
         try {
             result = genreDAO.addGenre(genre);
             if (!result) {
-                throw new ValidationException("Genre with this title already exists");
+                throw new ValidationException("Жанр '" + genre + "' уже добавлен");
             }
             return true;
         } catch (DAOException e) {

@@ -27,6 +27,7 @@ public class EditGenreCommand implements Command {
         try {
             genreService.editGenre(id, title);
             request.setAttribute(ReqParam.STATUS, ReqParam.STATUS_SUCCESS);
+            request.setAttribute(ReqParam.MESSAGE, "Изменения сохранены");
             request.getRequestDispatcher(JSPPageName.GENRES_PAGE).forward(request, response);
         } catch (IOException e) {
             LOG.error("Invalid address in getRequestDispatcher() in the editGenre command..", e);

@@ -11,7 +11,7 @@ public class AuthorDataValidator {
 
     public void checkName(String name) throws ValidationException{
         if(name == null || name.isEmpty()) {
-            throw new ValidationException("Field with name is empty. Enter name, please.");
+            throw new ValidationException("Введите ФИО автора");
         }
     }
 }
