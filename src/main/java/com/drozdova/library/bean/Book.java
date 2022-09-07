@@ -14,10 +14,12 @@ public class Book implements Serializable {
     private int pages;
     private String language;
     private String description;
+    private int count;
+    private int inStock;
 
     public Book() {}
 
-    public Book(int id, String title, int idGenre, String author, String genreTitle, int year, int pages, String language, String description) {
+    public Book(int id, String title, int idGenre, String author, String genreTitle, int year, int pages, String language, String description, int count, int inStock) {
         this.id = id;
         this.title = title;
         //TODO idGenre скорее всего вообще не нужен !!! наверное лучше убрать
@@ -28,6 +30,8 @@ public class Book implements Serializable {
         this.pages = pages;
         this.language = language;
         this.description = description;
+        this.count = count;
+        this.inStock = inStock;
     }
 
     public int getId() {
@@ -46,20 +50,20 @@ public class Book implements Serializable {
         this.title = title;
     }
 
-    public String getAuthor() {
-        return author;
-    }
-
-    public void setAuthor(String author) {
-        this.author = author;
-    }
-
     public int getIdGenre() {
         return idGenre;
     }
 
     public void setIdGenre(int idGenre) {
         this.idGenre = idGenre;
+    }
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
     }
 
     public String getGenreTitle() {
@@ -102,17 +106,33 @@ public class Book implements Serializable {
         this.description = description;
     }
 
+    public int getCount() {
+        return count;
+    }
+
+    public void setCount(int count) {
+        this.count = count;
+    }
+
+    public int getInStock() {
+        return inStock;
+    }
+
+    public void setInStock(int inStock) {
+        this.inStock = inStock;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Book book = (Book) o;
-        return getId() == book.getId() && getIdGenre() == book.getIdGenre() && getYear() == book.getYear() && getPages() == book.getPages() && Objects.equals(getTitle(), book.getTitle()) && Objects.equals(getAuthor(), book.getAuthor()) && Objects.equals(getGenreTitle(), book.getGenreTitle()) && Objects.equals(getLanguage(), book.getLanguage()) && Objects.equals(getDescription(), book.getDescription());
+        return getId() == book.getId() && getIdGenre() == book.getIdGenre() && getYear() == book.getYear() && getPages() == book.getPages() && getCount() == book.getCount() && getInStock() == book.getInStock() && Objects.equals(getTitle(), book.getTitle()) && Objects.equals(getAuthor(), book.getAuthor()) && Objects.equals(getGenreTitle(), book.getGenreTitle()) && Objects.equals(getLanguage(), book.getLanguage()) && Objects.equals(getDescription(), book.getDescription());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getTitle(), getIdGenre(), getAuthor(), getGenreTitle(), getYear(), getPages(), getLanguage(), getDescription());
+        return Objects.hash(getId(), getTitle(), getIdGenre(), getAuthor(), getGenreTitle(), getYear(), getPages(), getLanguage(), getDescription(), getCount(), getInStock());
     }
 
     @Override
@@ -127,6 +147,8 @@ public class Book implements Serializable {
                 ", pages=" + pages +
                 ", language='" + language + '\'' +
                 ", description='" + description + '\'' +
+                ", count=" + count +
+                ", inStock=" + count +
                 '}';
     }
 }

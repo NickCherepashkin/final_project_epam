@@ -30,6 +30,7 @@ public class ReqParam {
     public static final String AUTHOR = "author";
     public static final String USER = "user";
     public static final String TITLE = "title";
+    public static final String COUNT = "count";
     public static final String FIND = "find_param";
     public static final String SORT = "sort_param";
     public static final String AUTHORS_LIST = "authorsList";

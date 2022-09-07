@@ -26,6 +26,10 @@ public class SQLOrderDAO implements OrderDAO {
             "AND book_order.id_status = status_order.id ORDER BY ";
     private static final String EDIT_ORDER_STATUS_QUERY = "UPDATE book_order SET id_status = ? WHERE id = ?";
     private static final String GET_ORDER_BY_USER_AND_BOOK = "SELECT id, id_status FROM book_order WHERE id_user = ? AND id_book = ?";
+    private static final String GET_IN_STOCK = "SELECT book_count.id_book, in_stock FROM book_count, book_order WHERE  book_count.id_book = book_order.id_book AND book_order.id = ?";
+    private static final String UPDATE_IN_STOCK = "UPDATE book_count SET in_stock = ? WHERE id_book = ?";
+    private static final String GET_IN_STOCK_BY_ID = "SELECT in_stock FROM book_count WHERE  id_book = ?";
+
 
     @Override
     public boolean addOrder(int idUser, int idBook) throws DAOException {
@@ -50,6 +54,21 @@ public class SQLOrderDAO implements OrderDAO {
             pStatement.setLong(1, idUser);
             pStatement.setInt(2, idBook);
             pStatement.executeUpdate();
+
+            pStatement = connection.prepareStatement(GET_IN_STOCK_BY_ID);
+            pStatement.setInt(1, idBook);
+            resultSet = pStatement.executeQuery();
+            int inStock = 0;
+            if (resultSet.next()) {
+                inStock = resultSet.getInt("in_stock");
+            }
+            inStock++;
+
+            pStatement = connection.prepareStatement(UPDATE_IN_STOCK);
+            pStatement.setInt(1, inStock);
+            pStatement.setInt(2, idBook);
+            pStatement.executeUpdate();
+
             return true;
         } catch (ConnectionPoolException e) {
             throw new DAOException("Connection Pool Error when trying to add Order", e);
@@ -114,6 +133,7 @@ public class SQLOrderDAO implements OrderDAO {
     public boolean editOrderStatus(int idOrder, int idStatus) throws DAOException {
         Connection connection = null;
         PreparedStatement pStatement = null;
+        ResultSet resultSet = null;
 
         try {
             connection = connectionPool.takeConnection();
@@ -121,6 +141,29 @@ public class SQLOrderDAO implements OrderDAO {
             pStatement.setInt(1, idStatus);
             pStatement.setInt(2, idOrder);
             pStatement.executeUpdate();
+
+            if (idStatus == 2 || idStatus == 3) {
+                pStatement = connection.prepareStatement(GET_IN_STOCK);
+                pStatement.setInt(1, idOrder);
+                resultSet = pStatement.executeQuery();
+                int inStock = 0;
+                int idBook = 0;
+                if (resultSet.next()) {
+                    inStock = resultSet.getInt("in_stock");
+                    idBook = resultSet.getInt("id_book");
+                }
+
+                if (idStatus == 2) {
+                    inStock++;
+                } else {
+                    inStock--;
+                }
+
+                pStatement = connection.prepareStatement(UPDATE_IN_STOCK);
+                pStatement.setInt(1, inStock);
+                pStatement.setInt(2, idBook);
+                pStatement.executeUpdate();
+            }
 
             return true;
         } catch (ConnectionPoolException e) {

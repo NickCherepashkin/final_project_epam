@@ -7,6 +7,7 @@ import com.drozdova.library.controller.command.Command;
 import com.drozdova.library.service.BookService;
 import com.drozdova.library.service.ServiceException;
 import com.drozdova.library.service.ServiceProvider;
+import com.drozdova.library.service.validation.ValidationException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -18,6 +19,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
+import java.util.List;
 
 public class EditBookInfoCommand implements Command {
     private static final Logger LOG = LogManager.getLogger(EditBookInfoCommand.class);
@@ -41,6 +43,7 @@ public class EditBookInfoCommand implements Command {
             book.setPages(Integer.parseInt(request.getParameter(ReqParam.PAGES)));
             book.setLanguage(request.getParameter(ReqParam.LANGUAGE));
             book.setDescription(request.getParameter(ReqParam.DESCRIPTION));
+            book.setCount(Integer.parseInt(request.getParameter(ReqParam.COUNT)));
             int idAuthor = Integer.parseInt(request.getParameter(ReqParam.ID_AUTHOR));
             int id = bookService.editBookInfo(book, idAuthor);
             String imgName = request.getParameter("file");
@@ -58,10 +61,19 @@ public class EditBookInfoCommand implements Command {
                 }
             }
 
-
-            request.setAttribute(ReqParam.STATUS, ReqParam.STATUS_SUCCESS);
-            request.setAttribute(ReqParam.MESSAGE,"Изменения сохранены ");
+            request.removeAttribute("bookList");
+            request.getSession().setAttribute(ReqParam.STATUS, "edit_success");
+            request.setAttribute(ReqParam.MESSAGE,(String)"Изменения сохранены");
             request.getRequestDispatcher(JSPPageName.BOOKS_PAGE).forward(request, response);
+        } catch (ValidationException e) {
+            request.getSession().setAttribute(ReqParam.STATUS, "edit_failed");
+            request.setAttribute(ReqParam.MESSAGE, e.getMessage());
+            try {
+                request.getRequestDispatcher(JSPPageName.BOOKS_PAGE).forward(request, response);
+            } catch (IOException ex) {
+                LOG.error("Invalid address to forward in the editBookInfo command after validation.", e);
+                throw new ServletException(ex);
+            }
         } catch (IOException e) {
             LOG.error("Invalid address to forward in the editBookInfo command.", e);
             throw new ServletException(e);

@@ -131,7 +131,7 @@
     <script type="text/javascript">
       var status = document.getElementById("status").value;
       if (status == "failed") {
-        swal("Ошибка!", "${message}", "success");
+        swal("Ошибка!", "${message}", "error");
       }
     </script>
   </body>

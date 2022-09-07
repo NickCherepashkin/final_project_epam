@@ -50,7 +50,7 @@ public class GetBookListCommand implements Command {
             int noOfRecords = bookService.getNoOfRecords();
             int noOfPages = (int) Math.ceil(noOfRecords * 1.0 / recordsPerPage);
 
-            request.setAttribute(ReqParam.BOOKS_LIST, bookList);
+            request.getSession().setAttribute(ReqParam.BOOKS_LIST, bookList);
             request.setAttribute(ReqParam.NO_OF_PAGE, noOfPages);
             request.setAttribute(ReqParam.CURRENT_PAGE, page);
             RequestDispatcher requestDispatcher;

@@ -6,6 +6,7 @@ import com.drozdova.library.dao.DAOException;
 import com.drozdova.library.dao.DAOProvider;
 import com.drozdova.library.service.BookService;
 import com.drozdova.library.service.ServiceException;
+import com.drozdova.library.service.validation.ValidationException;
 
 import java.util.List;
 
@@ -39,7 +40,11 @@ public class BookServiceImpl implements BookService {
     public int editBookInfo(Book book, int idAuthor) throws ServiceException {
         try {
             // TODO написать валидатор
-            return bookDAO.editBookInfo(book, idAuthor);
+            int result = bookDAO.editBookInfo(book, idAuthor);
+            if (result == 0) {
+                throw new ValidationException("Данная книга уже добавлена");
+            }
+            return result;
         } catch (DAOException e) {
             throw new ServiceException(e);
         }
@@ -48,7 +53,9 @@ public class BookServiceImpl implements BookService {
     @Override
     public void deleteBook(int idBook) throws ServiceException {
         try {
-            bookDAO.deleteBook(idBook);
+            if (!bookDAO.deleteBook(idBook)) {
+                throw new ValidationException("Не все экземпляры книги возвращены читателями");
+            }
         } catch (DAOException e) {
             throw new ServiceException(e);
         }

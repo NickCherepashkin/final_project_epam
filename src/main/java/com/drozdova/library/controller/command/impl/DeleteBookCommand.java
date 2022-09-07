@@ -24,13 +24,22 @@ public class DeleteBookCommand implements Command {
         int idBook = Integer.parseInt(request.getParameter(ReqParam.ID_BOOK));
         try{
             bookService.deleteBook(idBook);
-            request.setAttribute(ReqParam.STATUS, ReqParam.STATUS_SUCCESS);
+            request.getSession().setAttribute(ReqParam.STATUS, "delete_success");
             request.setAttribute(ReqParam.MESSAGE,"Книга была удалена." );
-            request.removeAttribute(ReqParam.BOOKS_LIST);
+            request.getSession().removeAttribute(ReqParam.BOOKS_LIST);
             request.getRequestDispatcher(JSPPageName.BOOKS_PAGE).forward(request, response);
         } catch (IOException e) {
             LOG.error("Invalid address to forward in the deleteGenre command.", e);
             throw new ServletException(e);
+        } catch (ValidationException e) {
+            request.getSession().setAttribute(ReqParam.STATUS, "delete_failed");
+            request.setAttribute(ReqParam.MESSAGE, e.getMessage());
+            try {
+                request.getRequestDispatcher(JSPPageName.BOOKS_PAGE).forward(request, response);
+            } catch (IOException ex) {
+                LOG.error("Invalid address to forward in the deleteGenre command after validation.", e);
+                throw new ServletException(ex);
+            }
         }
     }
 }

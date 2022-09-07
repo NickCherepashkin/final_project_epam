@@ -13,17 +13,23 @@ import java.util.List;
 public class SQLBookDAO implements BookDAO {
     private static final ConnectionPool connectionPool = ConnectionPool.getInstance();
 
-    private static final String BOOK_LIST_QUERY = "SELECT SQL_CALC_FOUND_ROWS book.*, genre.title AS 'genre', GROUP_CONCAT(author.name SEPARATOR' , ') as 'author' FROM book, genre, author, book_authors WHERE book.id_genre = genre.id and book.id = book_authors.id_book and book_authors.id_author = author.id AND book.delete_status = 1 GROUP BY id LIMIT ";
+    private static final String BOOK_LIST_QUERY = "SELECT SQL_CALC_FOUND_ROWS book.*, genre.title AS 'genre', GROUP_CONCAT(author.name SEPARATOR' , ') as 'author', book_count.count, book_count.in_stock FROM book, genre, author, book_authors, book_count WHERE book.id_genre = genre.id and book.id = book_authors.id_book and book_authors.id_author = author.id AND book.id = book_count.id_book AND book.delete_status = 1 GROUP BY id LIMIT ";
     private static final String NOVELTY_LIST_QUERY = "SELECT book.*, genre.title AS 'genre', GROUP_CONCAT(author.name SEPARATOR' , ') as 'author' FROM book, genre, author, book_authors WHERE book.id_genre = genre.id and book.id = book_authors.id_book and book_authors.id_author = author.id AND book.delete_status = 1 GROUP BY id ORDER BY id DESC LIMIT 6";
     private static final String EDIT_BOOK_INFO_QUERY = "UPDATE book SET title = ?, id_genre = ?, year = ?, pages = ?, language = ?, description = ? WHERE id = ?";
     private static final String UPDATE_BOOK_AUTHOR_QUERY = "UPDATE book_authors SET id_author = ? WHERE id_book = ?";
     private static final String EDIT_STATUS_BOOK_QUERY = "UPDATE book SET delete_status = 0 WHERE id = ?";
     private static final String ADD_BOOK_QUERY = "INSERT INTO book(title, id_genre, year, pages, language, description, delete_status) VALUES(?,?,?,?,?,?,1)";
     private static final String GET_BOOK_ID_QUERY = "SELECT id FROM book WHERE title = ?";
-    private static final String INSERT_BOOK_AUTHOR_QUERY = "INSERT INTO book_authors(id_book, id_author) VALUES(?, ?)";
-    private static final String GET_SORTED_BOOKS_LIST_QUERY = "SELECT SQL_CALC_FOUND_ROWS book.*, genre.title AS 'genre', GROUP_CONCAT(author.name SEPARATOR' , ') as 'author' FROM book, genre, author, book_authors WHERE book.id_genre = genre.id and book.id = book_authors.id_book and book_authors.id_author = author.id AND book.delete_status = 1 GROUP BY id ORDER BY ";
-    private static final String FIND_BOOKS_QUERY = "SELECT SQL_CALC_FOUND_ROWS book.*, genre.title AS 'genre', GROUP_CONCAT(author.name SEPARATOR' , ') as 'author' FROM book, genre, author, book_authors WHERE book.id_genre = genre.id and book.id = book_authors.id_book and book_authors.id_author = author.id AND book.delete_status = 1 AND (book.title LIKE ? OR author.name LIKE ?)  GROUP BY id ORDER BY title ASC LIMIT ";
+    private static final String INSERT_BOOK_AUTHOR_QUERY = "INSERT INTO book_authors(id_author, id_book) VALUES(?, ?)";
+    private static final String GET_SORTED_BOOKS_LIST_QUERY = "SELECT SQL_CALC_FOUND_ROWS book.*, genre.title AS 'genre', GROUP_CONCAT(author.name SEPARATOR' , ') as 'author', book_count.count, book_count.in_stock FROM book, genre, author, book_authors, book_count WHERE book.id_genre = genre.id and book.id = book_authors.id_book and book_authors.id_author = author.id AND book.id = book_count.id_book AND book.delete_status = 1 GROUP BY id ORDER BY ";
+    private static final String FIND_BOOKS_QUERY = "SELECT SQL_CALC_FOUND_ROWS book.*, genre.title AS 'genre', GROUP_CONCAT(author.name SEPARATOR' , ') as 'author', book_count.count, book_count.in_stock FROM book, genre, author, book_authors, book_count WHERE book.id_genre = genre.id and book.id = book_authors.id_book and book_authors.id_author = author.id AND book.id = book_count.id_book AND book.delete_status = 1 AND (book.title LIKE ? OR author.name LIKE ?)  GROUP BY id ORDER BY title ASC LIMIT ";
     private static final String COUNT_BOOKS_QUERY = "SELECT FOUND_ROWS();";
+    private static final String FIND_BOOK_BY_TITLE_QUERY = "SELECT book.id FROM book, book_authors, author WHERE title = ? " +
+            "AND author.id = ? AND book.id = book_authors.id_book AND book_authors.id_author = author.id AND book.delete_status = 1";
+    private static final String INSERT_COUNT_BOOKS_QUERY = "INSERT INTO book_count(id_book, count, in_stock) VALUES(?,?,?);";
+    private static final String UPDATE_COUNT_BOOKS_QUERY = "UPDATE book_count SET count = ? WHERE id_book = ?";
+    private static final String GET_IN_STOCK_BOOKS_QUERY = "SELECT in_stock FROM book_count WHERE id_book = ?";
+
 
     private int noOfRecords;
 
@@ -56,6 +62,8 @@ public class SQLBookDAO implements BookDAO {
                 book.setPages(resultSet.getInt("pages"));
                 book.setLanguage(resultSet.getString("language"));
                 book.setDescription(resultSet.getString("description"));
+                book.setCount(resultSet.getInt("count"));
+                book.setInStock(resultSet.getInt("in_stock"));
 
                 bookList.add(book);
             }
@@ -127,6 +135,15 @@ public class SQLBookDAO implements BookDAO {
             connection = connectionPool.takeConnection();
             int id = book.getId();
             if (id == 0) {
+                pStatement = connection.prepareStatement(FIND_BOOK_BY_TITLE_QUERY);
+                pStatement.setString(1, book.getTitle());
+                pStatement.setInt(2, idAuthor);
+                resultSet = pStatement.executeQuery();
+
+                if (resultSet.next()) {
+                    return 0;
+                }
+
                 pStatement = connection.prepareStatement(ADD_BOOK_QUERY);
             } else {
                 pStatement = connection.prepareStatement(EDIT_BOOK_INFO_QUERY);
@@ -149,14 +166,24 @@ public class SQLBookDAO implements BookDAO {
                     id = resultSet.getInt("id");
                 }
                 pStatement = connection.prepareStatement(INSERT_BOOK_AUTHOR_QUERY);
+                pStatement.setInt(1, idAuthor);
+                pStatement.setInt(2, id);
+                pStatement.executeUpdate();
+                pStatement = connection.prepareStatement(INSERT_COUNT_BOOKS_QUERY);
+                pStatement.setInt(1, id);
+                pStatement.setInt(2, book.getCount());
+                pStatement.setInt(3, 0);
+                pStatement.executeUpdate();
             } else {
                 pStatement = connection.prepareStatement(UPDATE_BOOK_AUTHOR_QUERY);
+                pStatement.setInt(1, idAuthor);
+                pStatement.setInt(2, id);
+                pStatement.executeUpdate();
+                pStatement = connection.prepareStatement(UPDATE_COUNT_BOOKS_QUERY);
+                pStatement.setInt(1, book.getCount());
+                pStatement.setInt(2, id);
+                pStatement.executeUpdate();
             }
-
-            pStatement.setInt(1, idAuthor);
-            pStatement.setInt(2, id);
-
-            pStatement.executeUpdate();
 
             return id;
         } catch (ConnectionPoolException e) {
@@ -174,9 +201,22 @@ public class SQLBookDAO implements BookDAO {
     public boolean deleteBook(int idBook) throws DAOException {
         Connection connection = null;
         PreparedStatement pStatement = null;
+        ResultSet resultSet = null;
 
         try {
             connection = connectionPool.takeConnection();
+            pStatement = connection.prepareStatement(GET_IN_STOCK_BOOKS_QUERY);
+            pStatement.setInt(1, idBook);
+            resultSet = pStatement.executeQuery();
+
+            if (resultSet.next()) {
+                int inStock = resultSet.getInt("in_stock");
+
+                if (inStock > 0) {
+                    return false;
+                }
+            }
+
             pStatement = connection.prepareStatement(EDIT_STATUS_BOOK_QUERY);
             pStatement.setInt(1, idBook);
             pStatement.executeUpdate();
@@ -218,6 +258,8 @@ public class SQLBookDAO implements BookDAO {
                 book.setPages(resultSet.getInt("pages"));
                 book.setLanguage(resultSet.getString("language"));
                 book.setDescription(resultSet.getString("description"));
+                book.setCount(resultSet.getInt("count"));
+                book.setInStock(resultSet.getInt("in_stock"));
 
                 bookList.add(book);
             }
@@ -267,6 +309,8 @@ public class SQLBookDAO implements BookDAO {
                 book.setPages(resultSet.getInt("pages"));
                 book.setLanguage(resultSet.getString("language"));
                 book.setDescription(resultSet.getString("description"));
+                book.setCount(resultSet.getInt("count"));
+                book.setInStock(resultSet.getInt("in_stock"));
 
                 bookList.add(book);
             }

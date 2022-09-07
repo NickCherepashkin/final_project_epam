@@ -58,7 +58,7 @@
                             <div id="myDropdown" class="dropdown-content">
                                 <a class="nav-link py-3 px-0 px-lg-3 rounded" href="genres-list?command=get_genres_list">${text_genres}</a>
                                 <a class="nav-link py-3 px-0 px-lg-3 rounded" href="authors-list?command=get_authors_list">${text_authors}</a>
-                                <a class="nav-link py-3 px-0 px-lg-3 rounded" href="books.jsp">${text_book}</a>
+                                <a class="nav-link py-3 px-0 px-lg-3 rounded" href="books-list?command=get_book_list">${text_book}</a>
                                 <a class="nav-link py-3 px-0 px-lg-3 rounded" href="users.jsp">${text_readers}</a>
                                 <a class="nav-link py-3 px-0 px-lg-3 rounded" href="orders-list?command=get_orders">${text_orders}</a>
                                 <a class="nav-link py-3 px-0 px-lg-3 rounded" href="logout?command=logout">${text_logout}</a>

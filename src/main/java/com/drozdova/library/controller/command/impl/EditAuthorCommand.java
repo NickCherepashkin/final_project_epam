@@ -27,6 +27,7 @@ public class EditAuthorCommand implements Command {
         try {
             authorService.editAuthor(id, name);
             request.setAttribute(ReqParam.STATUS, ReqParam.STATUS_SUCCESS);
+            request.setAttribute(ReqParam.MESSAGE, "Изменения сохранены");
             request.getRequestDispatcher(JSPPageName.AUTHORS_PAGE).forward(request, response);
         } catch (IOException e) {
             LOG.error("Invalid address in getRequestDispatcher() in the editAuthor command..", e);

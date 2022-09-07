@@ -1,6 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 
 <!DOCTYPE html>
 
@@ -14,15 +13,17 @@
     <link href="css/index-styles.css" rel="stylesheet" />
   </head>
 
-  <c:if test="${bookList == null}">
-    <jsp:forward page="/books-list">
-      <jsp:param name="command" value="get_book_list" />
-    </jsp:forward>
-  </c:if>
-
-  <body id="page-top">
+  <body>
     <jsp:include page="menu.jsp" />
-    <input type="hidden" id="status" value="${requestScope.get("status")}">
+
+    <input type="hidden" id="status" value="${sessionScope.get("status")}">
+
+    <c:if test="${genresList == null}">
+      <jsp:forward page="/books-list">
+        <jsp:param name="command" value="get_book_list" />
+      </jsp:forward>
+    </c:if>
+
     <section class="page-section-books novelty" id="novelty">
       <div class="container">
 
@@ -45,8 +46,8 @@
                   <div class="page-section-heading d-lg-inline-flex mb-0" >
                     <label class="form-control" >Cортировать по:</label>
                     <button type="submit" class="search form-control" name="sort_param" value="title">названию</button>
-                    <button type="submit" class="search form-control" name="sort_param" value="author" >автору</button>
-                    <button type="submit" class="search form-control" name="sort_param" value="genre" >жанру</button>
+                    <button type="submit" class="search form-control" name="sort_param" value="author">автору</button>
+                    <button type="submit" class="search form-control" name="sort_param" value="genre">жанру</button>
                   </div>
                 </form>
               </td>
@@ -80,8 +81,8 @@
                     <table>
                       <tr>
                         <td rowspan="5" ><img width="120px" height="140px" src="assets/img/books/${book.id}.png" alt=""></td>
-                        <td  class="descript-table"><h6>Автор(ы): </h6></td>
-                        <td  class="descript-table">${book.author}</td>
+                        <td class="descript-table"><h6>Автор(ы): </h6></td>
+                        <td class="descript-table">${book.author}</td>
                       </tr>
                       <tr>
                         <td  class="descript-table"><h6>Жанр: </h6></td>
@@ -110,7 +111,6 @@
                     <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#editBookInfo${book.id}">Редактировать</button>
                     <button type="submit" name="command" value="delete_book" class="btn btn-primary">Удалить</button>
                   </div>
-
                 </form>
               </div>
             </div>
@@ -132,7 +132,6 @@
                     </div>
                     <div class="mb-3">
                       <label class="col-form-label">Автор:</label>
-                      <label for="title_book"></label>
                       <select class="form-control" name="id_author">
                         <c:forEach var="author" items="${authorsList}">
                           <c:if test="${author.name == book.author}" >
@@ -143,7 +142,6 @@
                           </c:if>
                         </c:forEach>
                       </select>
-<%--                      <input type="text" id="title_book1" class="form-control" name="title" value="${book.author}">--%>
                     </div>
                     <div class="mb-3">
                       <label class="col-form-label">Жанр:</label>
@@ -160,11 +158,11 @@
                     </div>
                     <div class="mb-3">
                       <label class="col-form-label">Год:</label>
-                      <label for="year"></label><input type="text" id="year" class="form-control" name="year" value="${book.year}">
+                      <label for="year"></label><input type="number" id="year" class="form-control" name="year" value="${book.year}">
                     </div>
                     <div class="mb-3">
                       <label class="col-form-label">Количество страниц:</label>
-                      <label for="pages"></label><input type="text" id="pages" class="form-control" name="pages" value="${book.pages}">
+                      <label for="pages"></label><input type="number" id="pages" class="form-control" name="pages" value="${book.pages}">
                     </div>
                     <div class="mb-3">
                       <label class="col-form-label">Язык:</label>
@@ -177,6 +175,10 @@
                     <div class="mb-3">
                       <label for="description" class="col-form-label text-center">Описание:</label>
                       <textarea rows="5" class="form-control" id="description" name="description">${book.description}</textarea>
+                    </div>
+                    <div class="mb-3">
+                      <label class="col-form-label">Количество экземпляров:</label>
+                      <label for="count"></label><input type="number" id="count" class="form-control" name="count" value="${book.count}">
                     </div>
                     <div class="modal-footer">
                       <button type="submit" name="command" value="edit_book_info" class="btn btn-primary">Сохранить</button>
@@ -220,11 +222,11 @@
                   </div>
                   <div class="mb-3">
                     <label class="col-form-label">Год:</label>
-                    <label for="new_year"></label><input type="text" id="new_year" class="form-control" name="year" required>
+                    <label for="new_year"></label><input type="number" id="new_year" class="form-control" name="year" required>
                   </div>
                   <div class="mb-3">
                     <label class="col-form-label">Количество страниц:</label>
-                    <label for="new_pages"></label><input type="text" id="new_pages" class="form-control" name="pages" required>
+                    <label for="new_pages"></label><input type="number" id="new_pages" class="form-control" name="pages" required>
                   </div>
                   <div class="mb-3">
                     <label class="col-form-label">Язык:</label>
@@ -238,6 +240,10 @@
                     <label for="new_description" class="col-form-label text-center">Описание:</label>
                     <textarea rows="5" class="form-control" id="new_description" name="description" required></textarea>
                   </div>
+                  <div class="mb-3">
+                    <label class="col-form-label">Количество экземпляров:</label>
+                    <label for="new_count"></label><input type="number" id="new_count" class="form-control" name="count" required>
+                  </div>
                   <div class="modal-footer">
                     <button type="submit" name="command" value="add_book" class="btn btn-primary">Добавить</button>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
@@ -250,9 +256,6 @@
       </div>
 
       <nav aria-label="Page navigation">
-<%--        <input type="hidden" name="isView" value="${isView}">--%>
-<%--        <input type="hidden" name="isSort" value="${isSort}">--%>
-<%--        <input type="hidden" name="isFind" value="${isFind}">--%>
         <ul class="pagination justify-content-center">
           <c:if test="${currentPage != 1}" >
             <li class="page-item">
@@ -268,62 +271,74 @@
             </li>
           </c:if>
           <c:forEach begin="1" end="${noOfPages}" var="i">
-          <c:choose>
-          <c:when test="${currentPage eq i}">
-            <li class="page-item" ><h5>
+            <c:choose>
+              <c:when test="${currentPage eq i}">
+                <li class="page-item" ><h5>
+                  <c:if test="${sessionScope.isView == true}">
+                    <a class="page-link" href="catalog?command=get_book_list&page=${i}">${i}</a>
+                  </c:if>
+                  <c:if test="${sessionScope.isSort == true}">
+                    <a class="page-link" href="catalog?command=sorted_books&sort_param=${sort_param}&page=${i}">${i}</a>
+                  </c:if>
+                  <c:if test="${sessionScope.isFind == true}">
+                    <a class="page-link" href="catalog?find_param=${find_param}&command=find_books&page=${i}">${i}</a>
+                  </c:if>
+                </h5></li>
+              </c:when>
+              <c:otherwise>
+                <li class="page-item">
+                  <c:if test="${sessionScope.isView == true}">
+                    <a class="page-link" href="books-list?command=get_book_list&page=${i}">${i}</a>
+                  </c:if>
+                  <c:if test="${sessionScope.isSort == true}">
+                    <a class="page-link" href="catalog?command=sorted_books&sort_param=${sort_param}&page=${i}">${i}</a>
+                  </c:if>
+                  <c:if test="${sessionScope.isFind == true}">
+                    <a class="page-link" href="catalog?find_param=${find_param}&command=find_books&page=${i}">${i}</a>
+                  </c:if>
+                </li>
+              </c:otherwise>
+            </c:choose>
+          </c:forEach>
+          <c:if test="${currentPage lt noOfPages}">
+            <li class="page-item">
               <c:if test="${sessionScope.isView == true}">
-                <a class="page-link" href="catalog?command=get_book_list&page=${i}">${i}</a>
+                <a class="page-link" href="catalog?command=get_book_list&page=${currentPage + 1}">Следующая</a>
               </c:if>
               <c:if test="${sessionScope.isSort == true}">
-                <a class="page-link" href="catalog?command=sorted_books&sort_param=${sort_param}&page=${i}">${i}</a>
+                <a class="page-link" href="catalog?command=sorted_books&sort_param=${sort_param}&page=${currentPage + 1}">Следующая</a>
               </c:if>
               <c:if test="${sessionScope.isFind == true}">
-                <a class="page-link" href="catalog?find_param=${find_param}&command=find_books&page=${i}">${i}</a>
+                <a class="page-link" href="catalog?find_param=${find_param}&command=find_books&page=${currentPage + 1}">Следующая</a>
               </c:if>
-            </h5></li>
-          </c:when>
-          <c:otherwise>
-          <li class="page-item">
-            <c:if test="${sessionScope.isView == true}">
-              <a class="page-link" href="books-list?command=get_book_list&page=${i}">${i}</a>
-            </c:if>
-            <c:if test="${sessionScope.isSort == true}">
-            <a class="page-link" href="catalog?command=sorted_books&sort_param=${sort_param}&page=${i}">${i}</a>
-            </c:if>
-            <c:if test="${sessionScope.isFind == true}">
-            <a class="page-link" href="catalog?find_param=${find_param}&command=find_books&page=${i}">${i}</a>
-            </c:if>
-            </c:otherwise>
-            </c:choose>
-
-            </c:forEach>
-            <c:if test="${currentPage lt noOfPages}">
-          <li class="page-item">
-            <c:if test="${sessionScope.isView == true}">
-              <a class="page-link" href="catalog?command=get_book_list&page=${currentPage + 1}">Следующая</a>
-            </c:if>
-            <c:if test="${sessionScope.isSort == true}">
-              <a class="page-link" href="catalog?command=sorted_books&sort_param=${sort_param}&page=${currentPage + 1}">Следующая</a>
-            </c:if>
-            <c:if test="${sessionScope.isFind == true}">
-              <a class="page-link" href="catalog?find_param=${find_param}&command=find_books&page=${currentPage + 1}">Следующая</a>
-            </c:if>
-          </li>
+            </li>
           </c:if>
         </ul>
       </nav>
-
     </section>
 
     <jsp:include page="footer.jsp" />
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.startbootstrap.com/sb-forms-latest.js"></script>
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <link rel="stylesheet" href="css/sweet-alert.css">
     <script type="text/javascript">
       var status = document.getElementById("status").value;
-      if (status == "success") {
-        swal("Внимание!", ${message}, "success");
+      // var message = document.getElementById("message").value;
+      // swal("Внимание!", status, "success");
+      if (status == 'delete_success') {
+        ${sessionScope.replace("status", "")};
+        swal("Внимание!", 'Книга была удалена.', "success");
+      } else if(status == 'delete_failed') {
+        ${sessionScope.replace("status", "")};
+        swal("Удаление невозможно!", 'Не все экземпляры книги возвращены читателями', "warning");
+      } else if (status == 'edit_success') {
+        ${sessionScope.replace("status", "")};
+        swal("Внимание!", 'Изменения сохранены', "success");
+      } else if (status == 'edit_failed') {
+        ${sessionScope.replace("status", "")};
+        swal("Внимание!", 'Данная книга уже добавлена', "warning");
       }
     </script>
   </body>

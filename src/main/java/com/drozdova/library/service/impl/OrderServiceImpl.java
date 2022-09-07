@@ -19,7 +19,7 @@ public class OrderServiceImpl implements OrderService {
         try {
             boolean result = orderDAO.addOrder(idUser, idBook);
             if (!result) {
-                throw new ValidationException("Книга уже добавлена в заказы. Статцс заказа можно посмотреть на странице 'Заказы'");
+                throw new ValidationException("Книга уже добавлена в заказы. Статус заказа можно посмотреть на странице 'Заказы'");
             }
             return true;
         } catch (DAOException e) {
